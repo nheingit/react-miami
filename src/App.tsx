@@ -1,11 +1,9 @@
+import { useOpenAIChat } from "./lib/openai";
 import {
   Bird,
   CornerDownLeft,
-  Mic,
-  Paperclip,
   Rabbit,
   Settings,
-  Share,
   SquareTerminal,
   Turtle,
 } from "lucide-react";
@@ -36,6 +34,16 @@ import {
 } from "@/components/ui/tooltip";
 
 export function Dashboard() {
+  const { fetchChatResponse, response, loading, error } = useOpenAIChat();
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    const content = event.target.elements.content.value;
+
+    const messages = [{ role: "user", content: content }];
+    console.log(messages);
+    await fetchChatResponse(messages);
+  };
   return (
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
@@ -188,14 +196,6 @@ export function Dashboard() {
               </form>
             </DrawerContent>
           </Drawer>
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto gap-1.5 text-sm"
-          >
-            <Share className="size-3.5" />
-            Share
-          </Button>
         </header>
         <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -301,7 +301,7 @@ export function Dashboard() {
                   </Select>
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="content">Content</Label>
+                  <Label htmlFor="userContent">Content</Label>
                   <Textarea
                     id="content"
                     placeholder="You are a..."
@@ -315,38 +315,34 @@ export function Dashboard() {
             <Badge variant="outline" className="absolute right-3 top-3">
               Output
             </Badge>
-            <div className="flex-1" />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(response, null, 2),
+              }}
+            />
+            <div className="flex-1 pt-6">
+              {loading && <p>Loading...</p>}
+              {response && (
+                <p>
+                  <span>{JSON.stringify(response, null, 2)}</span>
+                </p>
+              )}
+              {error && <p>Error: {error.message}</p>}
+            </div>
             <form
               className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
               x-chunk="dashboard-03-chunk-1"
+              onSubmit={handleSubmit}
             >
-              <Label htmlFor="message" className="sr-only">
+              <Label htmlFor="content" className="sr-only">
                 Message
               </Label>
               <Textarea
-                id="message"
+                id="content"
                 placeholder="Type your message here..."
                 className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
               />
               <div className="flex items-center p-3 pt-0">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Paperclip className="size-4" />
-                      <span className="sr-only">Attach file</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Attach File</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Mic className="size-4" />
-                      <span className="sr-only">Use Microphone</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Use Microphone</TooltipContent>
-                </Tooltip>
                 <Button type="submit" size="sm" className="ml-auto gap-1.5">
                   Send Message
                   <CornerDownLeft className="size-3.5" />
