@@ -1,22 +1,7 @@
 import { useOpenAIChat } from "./lib/openai";
-import {
-  Bird,
-  CornerDownLeft,
-  Rabbit,
-  Settings,
-  SquareTerminal,
-  Turtle,
-} from "lucide-react";
+import { CornerDownLeft, SquareTerminal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
