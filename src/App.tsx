@@ -145,7 +145,7 @@ export function Dashboard() {
               </Badge>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: JSON.stringify(response, null, 2),
+                  __html: response ? JSON.stringify(response, null, 2) : "",
                 }}
               />
               <div className="flex-1 pt-6">
